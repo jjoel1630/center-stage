@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous(name="Linear Slide Task")
-public class LinearSlide extends LinearOpMode {
+public class LinearSlide extends LinearOpMode{
     private ElapsedTime timer;
 
     public int POSITION = 1;
@@ -36,7 +36,7 @@ public class LinearSlide extends LinearOpMode {
     public static int initticks = 50;
     public static double time = 5;
     public static int numTimes = 10;
-    public static double pwr = 0.8;
+    public static double pwr = 0.4;
 
     Vector2d storage = new Vector2d(63.82, -12.2);
     Pose2d storagep = new Pose2d(63.52, -11.90, 0);
@@ -44,7 +44,7 @@ public class LinearSlide extends LinearOpMode {
     DcMotorEx linearSlide;
 
     public double x = 21.0; // 19.00
-    public double y = -6.0; // 4.01   //what is this for??
+    public double y = -6.0; // 4.01
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -64,28 +64,8 @@ public class LinearSlide extends LinearOpMode {
                 .splineTo(new Vector2d(x, y), Math.toRadians(45.00))
                 .build();
 
-        TrajectorySequence positionPark1 = drive.trajectorySequenceBuilder(new Pose2d(x, y, Math.toRadians(45.00)))
-                .lineToConstantHeading(new Vector2d(11.88, -11.28))
-                .build();
-
-        TrajectorySequence positionPark2 = drive.trajectorySequenceBuilder(new Pose2d(11.88, -11.28, Math.toRadians(45.00)))
-                .lineToLinearHeading(new Pose2d(12.92, -36.15, Math.toRadians(90.00)))
-                .turn(Math.toRadians(90))
-                .build();
-
-        TrajectorySequence park0 = drive.trajectorySequenceBuilder(new Pose2d(12.92, -36.15, Math.toRadians(180)))
-                .turn(Math.toRadians(90))
-                .build();
-
-        TrajectorySequence park1 = drive.trajectorySequenceBuilder(new Pose2d(12.92, -36.15, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(36.22, -36.15))
-                .build();
-
-        TrajectorySequence park2 = drive.trajectorySequenceBuilder(new Pose2d(12.92, -36.15, Math.toRadians(180)))
-                .lineToConstantHeading(new Vector2d(59.68, -36.15))
-                .build();
         };
 
 
-        }
+}
 
