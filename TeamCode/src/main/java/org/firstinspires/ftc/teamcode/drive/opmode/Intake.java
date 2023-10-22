@@ -25,39 +25,21 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
 @TeleOp
-
 public class Intake extends LinearOpMode {
-    private DcMotorEx IntakeMotor = null; //setting intake motor variable
+    private DcMotorEx intakeMotor = null; //setting intake motor variable
 
-
-@Override
+    @Override
     public void runOpMode() throws InterruptedException{
-    IntakeMotor = hardwareMap.get(DcMotorEx.class, "Intake");
-    //IntakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-    IntakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "Intake");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-}
 
-    public void waitForStart() {
+        waitForStart();
 
-    while (opModeIsActive()) {
-        IntakeMotor.setPower(1); //max = 1?
+        while (opModeIsActive()) {
+            double power = gamepad2.right_stick_y;
 
-        double power = gamepad1.right_stick_y;
-        double neg_power = -gamepad1.right_stick_y;
-
-        if(power == 1) {
-            IntakeMotor.setPower(1);
+            intakeMotor.setPower(power);
         }
-        if (neg_power == 1) {
-            IntakeMotor.setPower(-1);
-        }
-        if (gamepad1.a) {
-            IntakeMotor.setPower(1);
-        }
-
-
     }
-
-        }
 }
