@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.drive.opmode.teleop;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 @TeleOp
@@ -16,6 +18,13 @@ public class TeleOpCode extends LinearOpMode {
     private DcMotorEx BackRightDT = null;
 
     private DcMotorEx intakeMotor = null; //setting intake motor variable
+    private Servo s1, s2;
+
+    private DcMotorEx linearSlideLeft = null;
+    private DcMotorEx linearSlideRight = null;
+
+
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -68,9 +77,47 @@ public class TeleOpCode extends LinearOpMode {
             BackLeftDT.setPower(leftBackPower);
             BackRightDT.setPower(rightBackPower);
 
+
+
             /* ------- INTAKE ------- */
             double power = gamepad2.right_stick_y;
             intakeMotor.setPower(power);
+
+            /*--------OUTTAKE---------*/
+
+
+             double SERVO_MAX = 1.0;
+             double SERVO_MIN = 0.0;
+             double servoPos1 = 1.0;
+             double servoPos2 = 1.0;
+            // if right bumper pressed first servo releases
+            if(gamepad2.right_bumper){
+                servoPos1 = SERVO_MIN;
+            }
+            // if left bumper pressed second servo releases
+            else if(gamepad2.left_bumper){
+                servoPos2 = SERVO_MIN;
+            }
+            s1.setPosition(servoPos1);
+            s2.setPosition(servoPos2);
+
+            // linear slide
+
+            linearSlideLeft = hardwareMap.get(DcMotorEx.class, "LinearSlideLeft");
+
+            linearSlideRight = hardwareMap.get(DcMotorEx.class, "LinearSlideRight");
+            if(gamepad2.right_stick_y >= 0 ){
+                linearSlideRight.setPower(0.6);
+                linearSlideLeft.setPower(0.6);
+
+            }
+
+            else if(gamepad2.right_stick_y <= 0 ){
+                linearSlideRight.setPower(-0.6);
+                linearSlideLeft.setPower(-0.6);
+            }
+
+
         }
     }
 }
