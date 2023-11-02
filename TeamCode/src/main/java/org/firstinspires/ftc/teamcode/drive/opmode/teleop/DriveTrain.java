@@ -1,23 +1,13 @@
 package org.firstinspires.ftc.teamcode.drive.opmode.teleop;
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 @Config
 @TeleOp
-public class Drivetrain extends LinearOpMode {
+public class DriveTrain extends LinearOpMode {
 /* ________________________Variable Constants____________________*/
 
     //Defining the 4 drivetrain motors as null
@@ -35,14 +25,20 @@ public class Drivetrain extends LinearOpMode {
         BackRightDT = hardwareMap.get(DcMotorEx.class, "rightRear");
 
         //setting left ones reverse since motors will be set up reverse
+
+
         FrontLeftDT.setDirection(DcMotorSimple.Direction.REVERSE);
         BackLeftDT.setDirection(DcMotorSimple.Direction.REVERSE);
+        FrontRightDT.setDirection(DcMotorSimple.Direction.REVERSE);
+        BackRightDT.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        waitForStart();
 
         while (opModeIsActive()) {
             //setting the directions onto the gamepad
             double axial = -gamepad1.left_stick_y;  // forward, back
-            double lateral = gamepad1.left_stick_x; // side to side
-            double yaw = gamepad1.right_stick_x; // turning
+            double lateral = gamepad1.right_stick_x; // side to side
+            double yaw = gamepad1.left_stick_x; // turning
 
             //setting the directions all at 1 (100%)
             double axialCoefficient = 1;
