@@ -20,6 +20,8 @@ public class TeleOpCode extends LinearOpMode {
     private DcMotorEx intakeMotor = null; //setting intake motor variable
     private Servo s1, s2;
 
+    private Servo s3;
+
     private DcMotorEx linearSlideLeft = null;
     private DcMotorEx linearSlideRight = null;
 
@@ -45,8 +47,8 @@ public class TeleOpCode extends LinearOpMode {
             /* ------- DRIVETRAIN ------- */
             //setting the directions onto the gamepad
             double axial = -gamepad1.left_stick_y;  // forward, back
-            double lateral = gamepad1.left_stick_x; // side to side
-            double yaw = gamepad1.right_stick_x; // turning
+            double lateral = gamepad1.right_stick_x; // side to side
+            double yaw = gamepad1.left_stick_x; // turning
 
             //setting the directions all at 1 (100%)
             double axialCoefficient = 1;
@@ -91,12 +93,17 @@ public class TeleOpCode extends LinearOpMode {
              double servoPos1 = 1.0;
              double servoPos2 = 1.0;
             // if right bumper pressed first servo releases
-            if(gamepad2.right_bumper){
+            if(gamepad2.left_bumper){
                 servoPos1 = SERVO_MIN;
             }
-            // if left bumper pressed second servo releases
-            else if(gamepad2.left_bumper){
+            else if(gamepad2.right_bumper){
+                servoPos1 = SERVO_MAX;
+            }
+            else if(gamepad2.left_trigger == 1){
                 servoPos2 = SERVO_MIN;
+            }
+            else if(gamepad2.right_trigger == 1){
+                servoPos2 = SERVO_MAX;
             }
             s1.setPosition(servoPos1);
             s2.setPosition(servoPos2);
@@ -104,8 +111,8 @@ public class TeleOpCode extends LinearOpMode {
             // linear slide
 
             linearSlideLeft = hardwareMap.get(DcMotorEx.class, "LinearSlideLeft");
-
             linearSlideRight = hardwareMap.get(DcMotorEx.class, "LinearSlideRight");
+
             if(gamepad2.right_stick_y >= 0 ){
                 linearSlideRight.setPower(0.6);
                 linearSlideLeft.setPower(0.6);
@@ -117,7 +124,16 @@ public class TeleOpCode extends LinearOpMode {
                 linearSlideLeft.setPower(-0.6);
             }
 
+            /*-----------AIRPLANE LAUNCHER-----------*/
 
+            double servoPower = 0.5;
+            double servoPos3 = 1.0;
+
+            if(gamepad2.b){
+                servoPos3 = servoPower;
+            }
+
+            s3.setPosition(servoPos3);
         }
     }
 }
