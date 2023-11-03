@@ -40,24 +40,75 @@ public class Lift extends LinearOpMode {
         int encoderValueOne = liftMotorOne.getCurrentPosition();
         int encoderValueTwo = liftMotorTwo.getCurrentPosition();
 
+        int stageZero = 0; //to go all the way down
         int stageOne = 10; //encoder ticks needed to reach each level
         int stageTwo = 20;
-        int StageThree = 30;
+        int stageThree = 30;
 
 
         waitForStart();
 
-        while(opModeIsActive()){
-            double power = gamepad2.left_stick_y;
+        liftMotorOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //to count encoder ticks
+        liftMotorTwo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        encoderValueOne = 0;
+        encoderValueTwo = 0;
+
+
+        while(opModeIsActive()){
+
+            double power = gamepad2.left_stick_y;
             liftMotorOne.setPower(power);
             liftMotorTwo.setPower(power);
 
             encoderValueOne = 0;
             encoderValueTwo = 0;
 
-            //encoder code to make buffer
-            //don't let linear slides go below/above certain point
+            encoderValueOne = liftMotorOne.getCurrentPosition();
+            encoderValueTwo = liftMotorTwo.getCurrentPosition();
+
+            if (encoderValueOne <= 0){ //setting power to 0 if encoder values reach 0
+                power = 0;
+            }
+
+            if (encoderValueTwo <= 0){ //setting power to 0 if encoder values reach 0
+                power = 0;
+            }
+/*
+            public void //(int position){
+                liftMotorOne.setPosition(position);*/
+            }
+
+            public int getMotorPosition( ) {
+                return motor.getCurrentPosition(); //<figure out how to set the encoder positioning
+
+
+            if (gamepad1.dpad_up) {
+                int diffOne = stageOne - encoderValueOne;
+                //(encoderValueOne + diffOne);
+            }
+
+            if (gamepad1.dpad_up) {
+                int diffTwo = stageTwo - encoderValueOne;
+                //(encoderValueOne + diffTwo);
+            }
+
+            if (gamepad1.dpad_up) {
+                int diffThree = stageThree - encoderValueOne;
+                //(encoderValueOne + diffThree);
+            }
+                //^incorpate loop
+
+                if (encoderValueOne == stageThree){ //setting power to 0 if encoder values reach highest stage
+                    power = 0;
+                }
+                if (encoderValueTwo == stageThree){
+                    power = 0;
+
+            if (gamepad1.dpad_down) {
+                setMotorPosition(stageZero);
+            }
+
 
         }
     }
