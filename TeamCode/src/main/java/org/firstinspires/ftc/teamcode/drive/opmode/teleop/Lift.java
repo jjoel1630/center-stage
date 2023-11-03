@@ -37,6 +37,14 @@ public class Lift extends LinearOpMode {
         liftMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotorTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        int encoderValueOne = liftMotorOne.getCurrentPosition();
+        int encoderValueTwo = liftMotorTwo.getCurrentPosition();
+
+        int stageOne = 10; //encoder ticks needed to reach each level
+        int stageTwo = 20;
+        int StageThree = 30;
+
+
         waitForStart();
 
         while(opModeIsActive()){
@@ -44,6 +52,9 @@ public class Lift extends LinearOpMode {
 
             liftMotorOne.setPower(power);
             liftMotorTwo.setPower(power);
+
+            encoderValueOne = 0;
+            encoderValueTwo = 0;
 
             //encoder code to make buffer
             //don't let linear slides go below/above certain point
