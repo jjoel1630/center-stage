@@ -31,13 +31,14 @@ public class Lift extends LinearOpMode {
     private DcMotorEx liftMotorTwo = null;
 
     @Override
-    public void runOpMode() throws InterruptedException{
-        liftMotorOne = hardwareMap.get(DcMotorEx.class,"LiftOne");
-        liftMotorTwo = hardwareMap.get(DcMotorEx.class,"LiftTwo");
+    public void runOpMode() throws InterruptedException {
+        //declaring motors for linear slides
+        liftMotorOne = hardwareMap.get(DcMotorEx.class, "LiftOne");
+        liftMotorTwo = hardwareMap.get(DcMotorEx.class, "LiftTwo");
         liftMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotorTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        int encoderValueOne = liftMotorOne.getCurrentPosition();
+        int encoderValueOne = liftMotorOne.getCurrentPosition(); //creating variables for encoder positioning
         int encoderValueTwo = liftMotorTwo.getCurrentPosition();
 
         int stageZero = 0; //to go all the way down
@@ -50,67 +51,77 @@ public class Lift extends LinearOpMode {
 
         liftMotorOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //to count encoder ticks
         liftMotorTwo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftMotorOne.setMode(DcMotor.RunMode.RUN_TO_POSITION); //able to go to certain position
+        liftMotorTwo.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        encoderValueOne = 0;
+        encoderValueOne = 0; //setting encoder values to 0
         encoderValueTwo = 0;
 
+        double motor_tick_count = 1; //find ticks counts
 
-        while(opModeIsActive()){
 
-            double power = gamepad2.left_stick_y;
+        while (opModeIsActive()) {
+
+            double power = gamepad2.left_stick_y; //to control linear slides manually
             liftMotorOne.setPower(power);
             liftMotorTwo.setPower(power);
 
-            encoderValueOne = 0;
-            encoderValueTwo = 0;
-
-            encoderValueOne = liftMotorOne.getCurrentPosition();
+            encoderValueOne = liftMotorOne.getCurrentPosition(); //get current encoder position
             encoderValueTwo = liftMotorTwo.getCurrentPosition();
 
-            if (encoderValueOne <= 0){ //setting power to 0 if encoder values reach 0
+            //buffers
+            if (encoderValueOne <= 0) { //setting power to 0 if encoder values reach 0
                 power = 0;
             }
 
-            if (encoderValueTwo <= 0){ //setting power to 0 if encoder values reach 0
+            if (encoderValueTwo <= 0) {
                 power = 0;
             }
-/*
-            public void //(int position){
-                liftMotorOne.setPosition(position);*/
+
+            if (encoderValueOne == stageThree) { //setting power to 0 if encoder values reach highest stage
+                power = 0;
             }
+            if (encoderValueTwo == stageThree) {
+                power = 0;
 
-            public int getMotorPosition( ) {
-                return motor.getCurrentPosition(); //<figure out how to set the encoder positioning
 
 
-            if (gamepad1.dpad_up) {
-                int diffOne = stageOne - encoderValueOne;
-                //(encoderValueOne + diffOne);
-            }
-
-            if (gamepad1.dpad_up) {
-                int diffTwo = stageTwo - encoderValueOne;
-                //(encoderValueOne + diffTwo);
-            }
-
-            if (gamepad1.dpad_up) {
-                int diffThree = stageThree - encoderValueOne;
-                //(encoderValueOne + diffThree);
-            }
-                //^incorpate loop
-
-                if (encoderValueOne == stageThree){ //setting power to 0 if encoder values reach highest stage
-                    power = 0;
+                if (gamepad2.dpad_left) {
+                    liftMotorOne.setPositionPIDFCoefficients(stageOne);
+                    liftMotorOne.setPower(1);
+                    liftMotorTwo.setPositionPIDFCoefficients(stageOne);
+                    liftMotorTwo.setPower(1);
                 }
-                if (encoderValueTwo == stageThree){
-                    power = 0;
 
-            if (gamepad1.dpad_down) {
-                setMotorPosition(stageZero);
+                if (gamepad2.dpad_up) {
+                    liftMotorOne.setPositionPIDFCoefficients(stageTwo);
+                    liftMotorOne.setPower(1);
+                    liftMotorTwo.setPositionPIDFCoefficients(stageTwo);
+                    liftMotorTwo.setPower(1);
+                }
+
+                if (gamepad2.dpad_right) {
+                    liftMotorOne.setPositionPIDFCoefficients(stageThree);
+                    liftMotorOne.setPower(1);
+                    liftMotorTwo.setPositionPIDFCoefficients(stageThree);
+                    liftMotorTwo.setPower(1);
+                }
+
+                if (gamepad2.dpad_down) {
+                    liftMotorOne.setPositionPIDFCoefficients(stageZero);
+                    liftMotorOne.setPower(1);
+                    liftMotorTwo.setPositionPIDFCoefficients(stageZero);
+                    liftMotorTwo.setPower(1);
+                }
+
+
+
+
+                }
             }
-
 
         }
+
     }
 
 }
