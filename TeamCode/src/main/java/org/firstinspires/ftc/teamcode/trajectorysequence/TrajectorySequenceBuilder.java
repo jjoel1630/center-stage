@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TrajectorySequenceBuilder {
+public class fiTrajectorySequenceBuilder {
     private final double resolution = 0.25;
 
     private final TrajectoryVelocityConstraint baseVelConstraint;
