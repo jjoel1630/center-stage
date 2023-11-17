@@ -12,57 +12,73 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class TeleOpCode extends LinearOpMode {
     //Defining the 4 drivetrain motors as null
-    private DcMotorEx FrontLeftDT = null;
-    private DcMotorEx FrontRightDT = null;
-    private DcMotorEx BackLeftDT = null;
-    private DcMotorEx BackRightDT = null;
+    private DcMotorEx frontLeft = null;
+    private DcMotorEx frontRight = null;
+    private DcMotorEx rearLeft = null;
+    private DcMotorEx rearRight = null;
 
     private DcMotorEx intakeMotor = null; //setting intake motor variable
-    private Servo s1, s2;
+    private Servo rightServo, leftServo;
 
-    private Servo s3;
+    private Servo airplane;
 
-    private DcMotorEx linearSlideLeft = null;
-    private DcMotorEx linearSlideRight = null;
+    private DcMotorEx leftLS = null;
+    private DcMotorEx rightLS = null;
 
+    // outtake constants
+    public static double SERVO_MAX_RIGHT = 1.0;
+    public static double SERVO_MIN_RIGHT = 0.0;
+    public static double SERVO_MAX_LEFT = 1.0;
+    public static double SERVO_MIN_LEFT = 0.0;
 
+    // airplane constants
+    public static double AIRPLANE_MAX = 1.0;
+    public static double AIRPLANE_MIN = 0.0;
 
+    // linearslide constants
+    public static int leftDir = 1;
+    public static int rightDir = 1;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //Calling the motor and defining them to the previous variables
-        FrontLeftDT = hardwareMap.get(DcMotorEx.class, "leftFront");
-        FrontRightDT = hardwareMap.get(DcMotorEx.class, "leftRear");
-        BackLeftDT = hardwareMap.get(DcMotorEx.class, "rightFront");
-        BackRightDT = hardwareMap.get(DcMotorEx.class, "rightRear");
+        /* ----------- HW MAP ----------- */
+        // DT
+        frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
+        frontRight = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rearLeft = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rearRight = hardwareMap.get(DcMotorEx.class, "rightRear");
+        // reverse dt motor
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //setting left ones reverse since motors will be set up reverse
-        FrontLeftDT.setDirection(DcMotorSimple.Direction.REVERSE);
-        BackLeftDT.setDirection(DcMotorSimple.Direction.REVERSE);
+        // linearSlide
+        leftLS = hardwareMap.get(DcMotorEx.class, "linearSlideLeft");
+        rightLS = hardwareMap.get(DcMotorEx.class, "linearSlideRight");
 
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "Intake");
+        // intake
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
+        // reverse intake
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         while (opModeIsActive()) {
             /* ------- DRIVETRAIN ------- */
-            //setting the directions onto the gamepad
+            // gamepad input
             double axial = -gamepad1.left_stick_y;  // forward, back
             double lateral = gamepad1.right_stick_x; // side to side
             double yaw = gamepad1.left_stick_x; // turning
 
-            //setting the directions all at 1 (100%)
+            // coefficient modifiers
             double axialCoefficient = 1;
             double yawCoefficient = 1;
             double lateralCoefficient = 1;
 
-            //resetting the coefficient based on the coefficient that we can change
+            // changing power factor by coef
             yaw = yaw * yawCoefficient;
             axial = axial * axialCoefficient;
             lateral = lateral * lateralCoefficient;
 
-            //slowmode?
+            // slowmode
             boolean slowModeOn = false;
-
             if (gamepad1.left_bumper) slowModeOn = true;
 
             double powerModifier = slowModeOn ? 0.3 : 0.8;
@@ -73,67 +89,44 @@ public class TeleOpCode extends LinearOpMode {
             double leftBackPower = (axial - lateral + yaw) * powerModifier;
             double rightBackPower = (axial + lateral - yaw) * powerModifier;
 
-            //makes all our intial variables to the powers set before
-            FrontLeftDT.setPower(leftFrontPower);
-            FrontRightDT.setPower(rightFrontPower);
-            BackLeftDT.setPower(leftBackPower);
-            BackRightDT.setPower(rightBackPower);
-
-
+            // set powers
+            frontLeft.setPower(leftFrontPower);
+            frontRight.setPower(rightFrontPower);
+            rearLeft.setPower(leftBackPower);
+            rearRight.setPower(rightBackPower);
 
             /* ------- INTAKE ------- */
             double power = gamepad2.right_stick_y;
             intakeMotor.setPower(power);
 
             /*--------OUTTAKE---------*/
+            double servoRight = 1.0;
+            double servoLeft = 1.0;
 
-
-             double SERVO_MAX = 1.0;
-             double SERVO_MIN = 0.0;
-             double servoPos1 = 1.0;
-             double servoPos2 = 1.0;
             // if right bumper pressed first servo releases
-            if(gamepad2.left_bumper){
-                servoPos1 = SERVO_MIN;
-            }
-            else if(gamepad2.right_bumper){
-                servoPos1 = SERVO_MAX;
-            }
-            else if(gamepad2.left_trigger == 1){
-                servoPos2 = SERVO_MIN;
-            }
-            else if(gamepad2.right_trigger == 1){
-                servoPos2 = SERVO_MAX;
-            }
-            s1.setPosition(servoPos1);
-            s2.setPosition(servoPos2);
+            if(gamepad2.left_bumper) servoRight = SERVO_MIN_RIGHT;
+            if(gamepad2.right_bumper) servoRight = SERVO_MAX_RIGHT;
+            if(gamepad2.left_trigger == 1) servoLeft = SERVO_MIN_LEFT;
+            if(gamepad2.right_trigger == 1) servoLeft = SERVO_MAX_LEFT;
+
+            rightServo.setPosition(servoRight);
+            leftServo.setPosition(servoLeft);
 
             // linear slide
+            double axialLS = -gamepad2.left_stick_y;  // forward, back
+            double axialLSCoefficient = 1;
+            axialLS = axialLS * axialLSCoefficient;
 
-            linearSlideLeft = hardwareMap.get(DcMotorEx.class, "LinearSlideLeft");
-            linearSlideRight = hardwareMap.get(DcMotorEx.class, "LinearSlideRight");
-
-            if(gamepad2.right_stick_y >= 0 ){
-                linearSlideRight.setPower(0.6);
-                linearSlideLeft.setPower(0.6);
-
-            }
-
-            else if(gamepad2.right_stick_y <= 0 ){
-                linearSlideRight.setPower(-0.6);
-                linearSlideLeft.setPower(-0.6);
-            }
+            rightLS.setPower(axialLS * rightDir);
+            leftLS.setPower(axialLS * leftDir);
 
             /*-----------AIRPLANE LAUNCHER-----------*/
+            double airplanePos = AIRPLANE_MAX;
 
-            double servoPower = 0.5;
-            double servoPos3 = 1.0;
+            if(gamepad2.b) airplanePos = AIRPLANE_MAX;
+            if(gamepad2.a) airplanePos = AIRPLANE_MIN;
 
-            if(gamepad2.b){
-                servoPos3 = servoPower;
-            }
-
-            s3.setPosition(servoPos3);
+            airplane.setPosition(airplanePos);
         }
     }
 }
