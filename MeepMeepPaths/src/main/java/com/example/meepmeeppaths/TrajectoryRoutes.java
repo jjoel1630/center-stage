@@ -17,20 +17,14 @@ public class TrajectoryRoutes {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 // Option: Set theme. Default = ColorSchemeRedDark()
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                                .forward(30)
-                                .turn(Math.toRadians(90))
-                                .forward(30)
-                                .addDisplacementMarker(() -> {
-                                    /* Everything in the marker callback should be commented out */
-
-                                    // bot.shooter.shoot()
-                                    // bot.wobbleArm.lower()
-                                })
-                                .turn(Math.toRadians(90))
-                                .splineTo(new Vector2d(10, 15), 0)
-                                .turn(Math.toRadians(90))
-                                .build()
+//                        drive.trajectorySequenceBuilder(new Pose2d(-36.67, -63.54, Math.toRadians(90.00)))
+//                                .splineToConstantHeading(new Vector2d(-47.36, -38.30), Math.toRadians(90.00))
+//                                .lineToLinearHeading(new Pose2d(-47.36, -49.88, Math.toRadians(90.00)))
+//                                .build()
+                                drive.trajectorySequenceBuilder(new Pose2d(-47.36, -49.88, Math.toRadians(90.00)))
+                                        .splineTo(new Vector2d(-15.29, -36.37), Math.toRadians(0.00))
+                                        .splineTo(new Vector2d(50.47, -38.00), Math.toRadians(0.00))
+                                        .build()
                 );
 
         // Set field image
